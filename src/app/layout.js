@@ -23,7 +23,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <UserProvider>
-        <body>{children}</body>
+        <body>
+          
+          <div className="">{children}</div>
+        </body>
       </UserProvider>
     </html>
   );

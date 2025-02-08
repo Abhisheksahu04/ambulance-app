@@ -8,11 +8,10 @@ export default function Home() {
   return (
     <div className="">
       <Navbar />
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative overflow-x-hidden">
         <Chatbot />
         <HeroSection />
       </div>
-      <Footer />
     </div>
   );
 }
