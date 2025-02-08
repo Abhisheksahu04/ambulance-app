@@ -48,15 +48,21 @@ const RealTimeTracking = ({ ambulanceData, userLocation, contactDetails }) => {
   };
 
   const calculateInitialAmbulancePosition = () => {
-    // Calculate starting position based on ambulance.distance
+    if (!google.maps.geometry || !google.maps.geometry.spherical) {
+      console.error("Google Maps Geometry library is not loaded.");
+      return { lat: userLocation.lat, lng: userLocation.lng }; // Fallback to user's location
+    }
+
     const heading = Math.random() * 360;
     const distance = parseFloat(ambulanceData.distance);
+
     return google.maps.geometry.spherical.computeOffset(
       new google.maps.LatLng(userLocation.lat, userLocation.lng),
       distance * 1000, // Convert km to meters
       heading
     );
   };
+
 
   const simulateAmbulanceMovement = () => {
     const directionsService = new window.google.maps.DirectionsService();

@@ -1,67 +1,159 @@
 "use client";
-import { loadStripe } from "@stripe/stripe-js";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { MapPin, Ambulance, CreditCard, Phone } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import FakePaymentForm from "@/components/FakePaymentForm";
-import AmbulanceTracking from "@/components/Ambulance-tracking";
-import { DUMMY_AMBULANCES } from "./Ambulance_data";
+import dynamic from "next/dynamic";
 import RealTimeTracking from "@/components/RealTimetracking";
 
-// const DUMMY_AMBULANCES = [
-//   {
-//     id: 1,
-//     type: "Basic Life Support",
-//     vehicleNumber: "DL01AB1234",
-//     driverName: "Rajesh Kumar",
-//     distance: "1.5",
-//     eta: "5 mins",
-//     rating: 4.8,
-//   },
-//   {
-//     id: 2,
-//     type: "Advanced Life Support",
-//     vehicleNumber: "DL02CD5678",
-//     driverName: "Amit Singh",
-//     distance: "2.3",
-//     eta: "8 mins",
-//     rating: 4.9,
-//   },
-//   {
-//     id: 3,
-//     type: "Patient Transport",
-//     vehicleNumber: "DL03EF9012",
-//     driverName: "Priya Sharma",
-//     distance: "3.0",
-//     eta: "12 mins",
-//     rating: 4.7,
-//   },
-// ];
+const DUMMY_AMBULANCES = [
+  {
+    id: 1,
+    type: "Basic Life Support",
+    driverName: "Rajesh Kumar",
+    rating: 4.8,
+    vehicleNumber: "MH 01 AB 1234",
+    distance: "2.5",
+    eta: "10 mins",
+  },
+  {
+    id: 2,
+    type: "Advanced Life Support",
+    driverName: "Priya Singh",
+    rating: 4.9,
+    vehicleNumber: "MH 01 CD 5678",
+    distance: "3.2",
+    eta: "15 mins",
+  },
+  {
+    id: 3,
+    type: "Patient Transport",
+    driverName: "Amit Patel",
+    rating: 4.7,
+    vehicleNumber: "MH 01 EF 9012",
+    distance: "1.8",
+    eta: "8 mins",
+  },
+  {
+    id: 4,
+    type: "Critical Care",
+    driverName: "Suresh Reddy",
+    rating: 5.0,
+    vehicleNumber: "MH 01 GH 3456",
+    distance: "4.0",
+    eta: "18 mins",
+  },
+];
+// Dynamically import client-side components
+const FakePaymentForm = dynamic(() => import("@/components/FakePaymentForm"), {
+  ssr: false,
+});
 
-const LocationInput = ({ location, setLocation, setShowAmbulances }) => (
+// const RealTimeTracking = dynamic(
+//   () => import("@/components/RealTimetracking"),
+//   {
+//     ssr: false,
+//   }
+// );
+
+// Moved AmbulanceList component definition here
+const AmbulanceList = ({
+  ambulances,
+  selectedAmbulance,
+  setSelectedAmbulance,
+}) => (
   <Card>
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <MapPin className="h-5 w-5" /> Your Location
+        <Ambulance className="h-5 w-5" /> Available Ambulances
       </CardTitle>
     </CardHeader>
-    <CardContent>
-      <div className="flex gap-2">
-        <Input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Enter your location"
-          className="flex-1"
+    <CardContent className="space-y-4">
+      {ambulances.map((ambulance) => (
+        <AmbulanceCard
+          key={ambulance.id}
+          ambulance={ambulance}
+          isSelected={selectedAmbulance?.id === ambulance.id}
+          onSelect={setSelectedAmbulance}
         />
-        <Button onClick={() => setShowAmbulances(location.trim() !== "")}>
-          Search
-        </Button>
-      </div>
+      ))}
     </CardContent>
   </Card>
 );
+
+const LocationInput = ({ onLocationSelect }) => {
+  const inputRef = React.useRef(null);
+  const autocompleteRef = React.useRef(null);
+
+  useEffect(() => {
+    // Load Google Maps JavaScript API
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = initAutocomplete;
+    document.head.appendChild(script);
+
+    return () => {
+      if (script.parentNode) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
+
+  const initAutocomplete = () => {
+    if (!inputRef.current) return;
+
+    autocompleteRef.current = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        componentRestrictions: { country: "IN" },
+        bounds: {
+          north: 19.2813,
+          south: 18.875,
+          east: 73.0297,
+          west: 72.7752,
+        },
+        strictBounds: true,
+        types: ["address"],
+      }
+    );
+
+    autocompleteRef.current.addListener("place_changed", () => {
+      const place = autocompleteRef.current.getPlace();
+      if (place.geometry) {
+        onLocationSelect({
+          address: place.formatted_address,
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        });
+      }
+    });
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <MapPin className="h-5 w-5" /> Your Location
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Input
+              ref={inputRef}
+              placeholder="Enter location in Mumbai"
+              className="pl-10"
+            />
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const AmbulanceCard = ({ ambulance, isSelected, onSelect }) => (
   <div
@@ -88,24 +180,6 @@ const AmbulanceCard = ({ ambulance, isSelected, onSelect }) => (
   </div>
 );
 
-const AmbulanceList = ({
-  ambulances,
-  selectedAmbulance,
-  setSelectedAmbulance,
-}) => (
-  <div className="mt-4 space-y-3">
-    <h3 className="font-semibold">Available Ambulances</h3>
-    {ambulances.map((ambulance) => (
-      <AmbulanceCard
-        key={ambulance.id}
-        ambulance={ambulance}
-        isSelected={selectedAmbulance?.id === ambulance.id}
-        onSelect={setSelectedAmbulance}
-      />
-    ))}
-  </div>
-);
-
 const ContactDetailsForm = ({ booking, setBooking }) => (
   <Card>
     <CardHeader>
@@ -113,7 +187,7 @@ const ContactDetailsForm = ({ booking, setBooking }) => (
         <Phone className="h-5 w-5" /> Contact Details
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4"> 
+    <CardContent className="space-y-4">
       <Input
         placeholder="Contact Person Name"
         value={booking.contactName}
@@ -151,8 +225,18 @@ const PaymentSection = ({ handleProceedToFakePayment, booking }) => (
   </Card>
 );
 
+const findNearbyAmbulances = async (location) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return DUMMY_AMBULANCES.map((ambulance) => ({
+    ...ambulance,
+    distance: Math.floor(Math.random() * 5) + 1,
+    eta: `${Math.floor(Math.random() * 10) + 5} mins`,
+  }));
+};
+
 const AmbulanceBooking = () => {
-  const [location, setLocation] = useState("");
+  const [availableAmbulances, setAvailableAmbulances] = useState([]);
   const [showAmbulances, setShowAmbulances] = useState(false);
   const [selectedAmbulance, setSelectedAmbulance] = useState(null);
   const [booking, setBooking] = useState({ contactName: "", contactPhone: "" });
@@ -160,37 +244,46 @@ const AmbulanceBooking = () => {
   const [bookingComplete, setBookingComplete] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
 
+  const handleLocationSelect = async (location) => {
+    setUserLocation(location);
+    const nearbyAmbulances = await findNearbyAmbulances(location);
+    setAvailableAmbulances(nearbyAmbulances);
+    setShowAmbulances(true);
+  };
 
   const handleProceedToFakePayment = () => setShowFakePayment(true);
 
-  
   const handleFakePaymentSuccess = () => {
     setShowFakePayment(false);
     setBookingComplete(true);
   };
 
-  if (bookingComplete)
+  if (bookingComplete) {
     return (
-      <RealTimeTracking ambulanceData={selectedAmbulance} contactDetails={booking} />
+      <RealTimeTracking
+        ambulanceData={selectedAmbulance}
+        userLocation={userLocation}
+        contactDetails={booking}
+      />
     );
+  }
 
   return (
     <div className="max-w-4xl min-h-screen mx-auto p-4 space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold">Emergency Ambulance Booking</h1>
       </div>
-      <LocationInput
-        location={location}
-        setLocation={setLocation}
-        setShowAmbulances={setShowAmbulances}
-      />
+
+      <LocationInput onLocationSelect={handleLocationSelect} />
+
       {showAmbulances && (
         <AmbulanceList
-          ambulances={DUMMY_AMBULANCES}
+          ambulances={availableAmbulances}
           selectedAmbulance={selectedAmbulance}
           setSelectedAmbulance={setSelectedAmbulance}
         />
       )}
+
       {selectedAmbulance && (
         <>
           <ContactDetailsForm booking={booking} setBooking={setBooking} />
@@ -200,6 +293,7 @@ const AmbulanceBooking = () => {
           />
         </>
       )}
+
       {showFakePayment && (
         <FakePaymentForm onSuccess={handleFakePaymentSuccess} />
       )}
