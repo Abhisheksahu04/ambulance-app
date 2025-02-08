@@ -8,11 +8,11 @@ export default function Home() {
   return (
     <div className="">
       <Navbar />
-        <div className="min-h-screen relative">
-          <Chatbot />
-          <HeroSection />
-        </div>
-        <Footer />
+      <div className="min-h-screen relative">
+        <Chatbot />
+        <HeroSection />
+      </div>
+      <Footer />
     </div>
   );
 }
