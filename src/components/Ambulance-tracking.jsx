@@ -28,7 +28,6 @@ const AmbulanceTracking = ({ ambulanceData, contactDetails }) => {
       <h1 className="text-2xl font-bold text-center mb-6">
         Ambulance En Route
       </h1>
-
       {/* Map Placeholder */}
       <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
