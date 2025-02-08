@@ -1,4 +1,3 @@
-// hooks/useAuth.js
 import { useState, useEffect } from 'react';
 import { authService } from '@/libs/appwrite';
 
@@ -7,36 +6,48 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkUser() {
-      try {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     checkUser();
   }, []);
 
+  const checkUser = async () => {
+    try {
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      console.error('Error checking user:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const login = async (email, password) => {
-    const session = await authService.login(email, password);
-    const currentUser = await authService.getCurrentUser();
-    setUser(currentUser);
-    return session;
+    try {
+      const { session, user } = await authService.login(email, password);
+      setUser(user);
+      return { session, user };
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
+    try {
+      await authService.logout();
+      setUser(null);
+    } catch (error) {
+      throw error;
+    }
   };
 
-  const register = async (email, password, name) => {
-    const newUser = await authService.register(email, password, name);
-    setUser(newUser);
-    return newUser;
+  const register = async (email, password, name, role, additionalDetails = {}) => {
+    try {
+      const user = await authService.register(email, password, name, role, additionalDetails);
+      setUser(user);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   return {
@@ -44,6 +55,7 @@ export function useAuth() {
     loading,
     login,
     logout,
-    register
+    register,
+    checkUser
   };
 }
