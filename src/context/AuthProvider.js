@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
     try {
       const { session, user } = await authService.login(email, password);
       setUser(user);
+      
       return { session, user };
     } catch (error) {
       throw error;

@@ -7,7 +7,6 @@ import HeroSection from "../components/HeroSection";
 export default function Home() {
   return (
     <div className="">
-        <Navbar />
         <div className="min-h-screen relative">
           <Chatbot />
           <HeroSection />
