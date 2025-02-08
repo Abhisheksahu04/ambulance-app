@@ -15,10 +15,8 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       await login(email, password);
-      router.push("/");
     } catch (err) {
       setError(err.message || "Login failed");
     }
