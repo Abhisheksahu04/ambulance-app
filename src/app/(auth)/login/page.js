@@ -1,26 +1,26 @@
 // app/login/page.js
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
       await login(email, password);
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || "Login failed");
     }
   };
 
@@ -35,8 +35,8 @@ export default function LoginPage() {
         )}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="email"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Email
@@ -51,8 +51,8 @@ export default function LoginPage() {
             />
           </div>
           <div className="mb-6">
-            <label 
-              htmlFor="password" 
+            <label
+              htmlFor="password"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Password

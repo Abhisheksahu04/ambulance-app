@@ -1,55 +1,55 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
 
 const TIME_SLOTS = {
   MORNING: "6:00-14:00",
   AFTERNOON: "14:00-22:00",
-  NIGHT: "22:00-6:00"
+  NIGHT: "22:00-6:00",
 };
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('patient');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [pinCode, setPinCode] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("patient");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pinCode, setPinCode] = useState("");
 
   // Patient specific fields
-  const [emergencyContact, setEmergencyContact] = useState('');
-  const [address, setAddress] = useState('');
-  
+  const [emergencyContact, setEmergencyContact] = useState("");
+  const [address, setAddress] = useState("");
+
   // Ambulance driver specific fields
-  const [licenseNumber, setLicenseNumber] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
   const [availabilitySlot, setAvailabilitySlot] = useState(TIME_SLOTS.MORNING);
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
   const { register } = useAuth();
 
   const validateCommonFields = () => {
     if (!email || !password || !name || !confirmPassword) {
-      setError('All fields are required');
+      setError("All fields are required");
       return false;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return false;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError("Password must be at least 8 characters long");
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return false;
     }
 
@@ -77,18 +77,16 @@ export default function RegisterPage() {
     //   return;
     // }
 
-
-
-    return register(email, password, name, 'patient', {
+    return register(email, password, name, "patient", {
       emergencyContact,
       pinCode,
-      address
+      address,
     });
   };
 
   const handleDriverRegistration = async () => {
     if (!licenseNumber || !vehicleNumber || !pinCode || !availabilitySlot) {
-      setError('All driver details are required');
+      setError("All driver details are required");
       return;
     }
 
@@ -107,31 +105,31 @@ export default function RegisterPage() {
     //   return;
     // }
 
-    return register(email, password, name, 'ambulance_driver', {
+    return register(email, password, name, "ambulance_driver", {
       licenseNumber,
       vehicleNumber,
       pinCode,
-      availabilitySlot
+      availabilitySlot,
     });
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!validateCommonFields()) {
       return;
     }
 
     try {
-      const registrationHandler = role === 'patient' 
-        ? handlePatientRegistration 
-        : handleDriverRegistration;
+      const registrationHandler =
+        role === "patient"
+          ? handlePatientRegistration
+          : handleDriverRegistration;
 
       await registrationHandler();
-
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
     }
   };
 
@@ -161,7 +159,10 @@ export default function RegisterPage() {
 
           {/* Common fields */}
           <div>
-            <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+            <label
+              htmlFor="name"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
               Full Name
             </label>
             <input
@@ -175,7 +176,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+            <label
+              htmlFor="email"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
               Email
             </label>
             <input
@@ -189,7 +193,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+            <label
+              htmlFor="password"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
               Password
             </label>
             <input
@@ -204,7 +211,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="confirm-password" className="block text-gray-700 text-sm font-bold mb-2">
+            <label
+              htmlFor="confirm-password"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
               Confirm Password
             </label>
             <input
@@ -219,10 +229,13 @@ export default function RegisterPage() {
           </div>
 
           {/* Patient Specific Fields */}
-          {role === 'patient' && (
+          {role === "patient" && (
             <>
               <div>
-                <label htmlFor="emergency-contact" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="emergency-contact"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   Emergency Contact Number
                 </label>
                 <input
@@ -238,7 +251,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="pincode" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="pincode"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   Pincode
                 </label>
                 <input
@@ -252,9 +268,11 @@ export default function RegisterPage() {
                 />
               </div>
 
-
               <div>
-                <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="address"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   Address
                 </label>
                 <textarea
@@ -271,10 +289,13 @@ export default function RegisterPage() {
           )}
 
           {/* Ambulance Driver Specific Fields */}
-          {role === 'ambulance_driver' && (
+          {role === "ambulance_driver" && (
             <>
               <div>
-                <label htmlFor="license-number" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="license-number"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   License Number
                 </label>
                 <input
@@ -288,7 +309,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="vehicle-number" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="vehicle-number"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   Ambulance Vehicle Number
                 </label>
                 <input
@@ -302,7 +326,10 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="pin-code" className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="pin-code"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   Service Area Pin Code
                 </label>
                 <input
@@ -327,9 +354,15 @@ export default function RegisterPage() {
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
-                  <option value={TIME_SLOTS.MORNING}>Morning (6:00 AM - 2:00 PM)</option>
-                  <option value={TIME_SLOTS.AFTERNOON}>Afternoon (2:00 PM - 10:00 PM)</option>
-                  <option value={TIME_SLOTS.NIGHT}>Night (10:00 PM - 6:00 AM)</option>
+                  <option value={TIME_SLOTS.MORNING}>
+                    Morning (6:00 AM - 2:00 PM)
+                  </option>
+                  <option value={TIME_SLOTS.AFTERNOON}>
+                    Afternoon (2:00 PM - 10:00 PM)
+                  </option>
+                  <option value={TIME_SLOTS.NIGHT}>
+                    Night (10:00 PM - 6:00 AM)
+                  </option>
                 </select>
               </div>
             </>
