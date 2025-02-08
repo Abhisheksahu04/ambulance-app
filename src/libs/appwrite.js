@@ -86,9 +86,8 @@ export const authService = {
           userProfileData
         );
 
-        console.log(user);
+        console.log("user"+user);
       }
-      
       return userAccount;
     } catch (error) {
       console.error('Registration error:', error);
@@ -118,7 +117,6 @@ export const authService = {
       throw error;
     }
   },
-
   // Get user profile with role-specific details
   async getCurrentUser() {
     try {

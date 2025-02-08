@@ -74,12 +74,14 @@ const Chatbot = () => {
 
   return (
     <div>
-      <Button
+      <button
         onClick={() => setOpen(true)}
-        className="bg-blue-600 fixed bottom-20 right-10 hover:bg-blue-700"
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium py-3 px-5 rounded-full shadow-xl transition duration-300 ease-in-out flex items-center justify-center transform hover:scale-105"
+        style={{ zIndex: 50 }}
       >
-        <MessageCircle className="mr-2 h-5 w-5" /> Chat with AI
-      </Button>
+        <MessageCircle className="mr-2 h-6 w-6" />
+        <span className="text-base">Chat with AI</span>
+      </button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-xl">
           <DialogHeader>
