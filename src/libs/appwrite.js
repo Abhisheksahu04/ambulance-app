@@ -333,5 +333,33 @@ export const authService = {
       console.error('Adding driver rating error:', error);
       throw error;
     }
-  }
+  },
+
+  // Submit feedback
+  async submitFeedback(userId, rating, responseTime, staffBehavior, comments) {
+    try {
+      
+
+      const feedback = {
+        rating,
+        responseTime,
+        staffBehavior,
+        comments,
+        userId
+      };
+
+      await databases.createDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID, // Database ID
+        process.env.NEXT_PUBLIC_FEEDBACK_COLLECTION_ID, // Collection ID
+        ID.unique(),
+        feedback
+      );
+
+      return { success: true, message: "Feedback submitted successfully" };
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      return { success: false, message: "Failed to submit feedback" };
+    }
+  },
+
 };

@@ -66,9 +66,25 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const feedbackService = async (userId, rating, responseTime, staffBehavior, comments) => {
+    try {
+      const feedback = await authService.submitFeedback(
+        rating,
+        responseTime,
+        staffBehavior,
+        comments,
+        userId
+      );
+      setUser(feedback);
+      return feedback;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, register, checkUser }}
+      value={{ user, loading, login, logout, register, checkUser, feedbackService }}
     >
       {children}
     </AuthContext.Provider>
