@@ -1,10 +1,11 @@
-"use client";
+"use client"
 
 import React, { useState, useEffect } from "react";
-import { MapPin, Ambulance, CreditCard, Phone } from "lucide-react";
+import { MapPin, Ambulance, CreditCard, Phone, Star, Clock, Navigation, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import dynamic from "next/dynamic";
 import RealTimeTracking from "@/components/RealTimetracking";
 
@@ -46,7 +47,6 @@ const DUMMY_AMBULANCES = [
     eta: "18 mins",
   },
 ];
-// Dynamically import client-side components
 const FakePaymentForm = dynamic(() => import("@/components/FakePaymentForm"), {
   ssr: false,
 });
@@ -88,7 +88,6 @@ const LocationInput = ({ onLocationSelect }) => {
   const autocompleteRef = React.useRef(null);
 
   useEffect(() => {
-    // Load Google Maps JavaScript API
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
     script.async = true;
@@ -104,21 +103,17 @@ const LocationInput = ({ onLocationSelect }) => {
 
   const initAutocomplete = () => {
     if (!inputRef.current) return;
-
-    autocompleteRef.current = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      {
-        componentRestrictions: { country: "IN" },
-        bounds: {
-          north: 19.2813,
-          south: 18.875,
-          east: 73.0297,
-          west: 72.7752,
-        },
-        strictBounds: true,
-        types: ["address"],
-      }
-    );
+    autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
+      componentRestrictions: { country: "IN" },
+      bounds: {
+        north: 19.2813,
+        south: 18.875,
+        east: 73.0297,
+        west: 72.7752,
+      },
+      strictBounds: true,
+      types: ["address"],
+    });
 
     autocompleteRef.current.addListener("place_changed", () => {
       const place = autocompleteRef.current.getPlace();
@@ -133,10 +128,10 @@ const LocationInput = ({ onLocationSelect }) => {
   };
 
   return (
-    <Card>
+    <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="h-5 w-5" /> Your Location
+        <CardTitle className="flex items-center gap-2 text-xl">
+          <MapPin className="h-6 w-6 text-red-500" /> Enter Your Location
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -144,8 +139,8 @@ const LocationInput = ({ onLocationSelect }) => {
           <div className="relative flex-1">
             <Input
               ref={inputRef}
-              placeholder="Enter location in Mumbai"
-              className="pl-10"
+              placeholder="Enter your location in Mumbai"
+              className="pl-10 h-12 text-lg"
             />
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
@@ -157,51 +152,70 @@ const LocationInput = ({ onLocationSelect }) => {
 
 const AmbulanceCard = ({ ambulance, isSelected, onSelect }) => (
   <div
-    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-      isSelected ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
+    className={`p-6 border rounded-lg cursor-pointer transition-all transform hover:scale-[1.02] ${
+      isSelected ? "border-blue-500 bg-blue-50 shadow-md" : "hover:border-gray-400"
     }`}
     onClick={() => onSelect(ambulance)}
   >
-    <div className="flex justify-between items-center">
-      <div>
-        <div className="font-medium">{ambulance.type}</div>
-        <div className="text-sm text-gray-600">
-          Driver: {ambulance.driverName} • Rating: {ambulance.rating}⭐
+    <div className="flex justify-between items-start">
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <span className="font-semibold text-lg">{ambulance.type}</span>
+          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+            Available Now
+          </span>
+        </div>
+        <div className="flex items-center text-sm text-gray-600 space-x-2">
+          <Star className="h-4 w-4 text-yellow-400" />
+          <span>{ambulance.rating}</span>
+          <span>•</span>
+          <span>{ambulance.driverName}</span>
         </div>
         <div className="text-sm text-gray-600">
           Vehicle: {ambulance.vehicleNumber}
         </div>
-        <div className="text-sm text-gray-600">
-          Distance: {ambulance.distance} km • ETA: {ambulance.eta}
+        <div className="flex items-center space-x-4 text-sm">
+          <span className="flex items-center text-blue-600">
+            <Navigation className="h-4 w-4 mr-1" />
+            {ambulance.distance} km away
+          </span>
+          <span className="flex items-center text-green-600">
+            <Clock className="h-4 w-4 mr-1" />
+            ETA: {ambulance.eta}
+          </span>
         </div>
       </div>
-      <Ambulance className="h-6 w-6 text-blue-500" />
+      <Ambulance className="h-8 w-8 text-blue-500" />
     </div>
   </div>
 );
 
 const ContactDetailsForm = ({ booking, setBooking }) => (
-  <Card>
+  <Card className="shadow-lg">
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <Phone className="h-5 w-5" /> Contact Details
+        <Phone className="h-6 w-6 text-blue-500" /> Emergency Contact Details
       </CardTitle>
     </CardHeader>
     <CardContent className="space-y-4">
-      <Input
-        placeholder="Contact Person Name"
-        value={booking.contactName}
-        onChange={(e) =>
-          setBooking({ ...booking, contactName: e.target.value })
-        }
-      />
-      <Input
-        placeholder="Emergency Contact Number"
-        value={booking.contactPhone}
-        onChange={(e) =>
-          setBooking({ ...booking, contactPhone: e.target.value })
-        }
-      />
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Contact Person Name</label>
+        <Input
+          className="h-12"
+          placeholder="Enter full name"
+          value={booking.contactName}
+          onChange={(e) => setBooking({ ...booking, contactName: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Emergency Contact Number</label>
+        <Input
+          className="h-12"
+          placeholder="Enter mobile number"
+          value={booking.contactPhone}
+          onChange={(e) => setBooking({ ...booking, contactPhone: e.target.value })}
+        />
+      </div>
     </CardContent>
   </Card>
 );
@@ -210,10 +224,15 @@ const PaymentSection = ({ handleProceedToFakePayment, booking }) => (
   <Card>
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <CreditCard className="h-5 w-5" /> Payment Details
+        <CreditCard className="h-6 w-6 text-green-500" /> Secure Payment
       </CardTitle>
     </CardHeader>
     <CardContent>
+      <Alert className="mb-4">
+        <AlertDescription>
+          Your payment information is secure and encrypted. No advance payment required for emergency services.
+        </AlertDescription>
+      </Alert>
       <Button
         className="w-full"
         onClick={handleProceedToFakePayment}
@@ -252,7 +271,6 @@ const AmbulanceBooking = () => {
   };
 
   const handleProceedToFakePayment = () => setShowFakePayment(true);
-
   const handleFakePaymentSuccess = () => {
     setShowFakePayment(false);
     setBookingComplete(true);
@@ -271,27 +289,39 @@ const AmbulanceBooking = () => {
   return (
     <div className="max-w-4xl min-h-screen mx-auto p-4 space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold">Emergency Ambulance Booking</h1>
+      <h1 className="text-3xl font-bold">Emergency Ambulance Booking</h1>
       </div>
-
+      
       <LocationInput onLocationSelect={handleLocationSelect} />
 
       {showAmbulances && (
-        <AmbulanceList
-          ambulances={availableAmbulances}
-          selectedAmbulance={selectedAmbulance}
-          setSelectedAmbulance={setSelectedAmbulance}
-        />
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Ambulance className="h-6 w-6 text-blue-500" /> Available Ambulances
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {availableAmbulances.map((ambulance) => (
+              <AmbulanceCard
+                key={ambulance.id}
+                ambulance={ambulance}
+                isSelected={selectedAmbulance?.id === ambulance.id}
+                onSelect={setSelectedAmbulance}
+              />
+            ))}
+          </CardContent>
+        </Card>
       )}
 
       {selectedAmbulance && (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ContactDetailsForm booking={booking} setBooking={setBooking} />
           <PaymentSection
             handleProceedToFakePayment={handleProceedToFakePayment}
             booking={booking}
           />
-        </>
+        </div>
       )}
 
       {showFakePayment && (

@@ -17,7 +17,7 @@ import Container from "./Container";
 
 const HeroSection = () => {
   return (
-      <div className="relative min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900">
+      <div className="relative min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-blue-950 px-28 pt-10 via-indigo-950 to-slate-900">
         {/* Animated background pattern */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute w-full h-full bg-[radial-gradient(circle_500px_at_50%_200px,#3b82f6,transparent)]" />
@@ -105,10 +105,10 @@ const HeroSection = () => {
                   </div>
 
                   {/* Floating Stats Card */}
-                  <div className="absolute -top-8 -right-8 bg-gradient-to-br from-blue-500 to-cyan-500 p-[1px] rounded-2xl rotate-3 shadow-xl">
+                  <div className="absolute -top-8 -right-8 bg-gradient-to-br from-blue-500 to-cyan-500 p-[1px] rounded-2xl rotate-6 shadow-xl">
                     <div className="bg-slate-950 rounded-2xl p-4 backdrop-blur-xl">
                       <div className="flex items-center gap-4">
-                        <div className="relative">
+                        <div className="relative ">
                           <div className="absolute -inset-1 bg-blue-500/20 rounded-full animate-ping" />
                           <Ambulance className="h-12 w-12 text-blue-400" />
                         </div>
