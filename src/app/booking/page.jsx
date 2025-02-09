@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { MapPin, Ambulance, CreditCard, Phone, Star, Clock, Navigation, Shield } from "lucide-react";
+import { MapPin, Ambulance, CreditCard, Phone, Star, Clock, Navigation, Shield, Star, Clock, Navigation, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import dynamic from "next/dynamic";
 import RealTimeTracking from "@/components/RealTimetracking";
@@ -47,6 +48,7 @@ const DUMMY_AMBULANCES = [
     eta: "18 mins",
   },
 ];
+// Dynamically import client-side components
 const FakePaymentForm = dynamic(() => import("@/components/FakePaymentForm"), {
   ssr: false,
 });
@@ -221,7 +223,7 @@ const ContactDetailsForm = ({ booking, setBooking }) => (
 );
 
 const PaymentSection = ({ handleProceedToFakePayment, booking }) => (
-  <Card>
+  <Card className="shadow-lg">
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
         <CreditCard className="h-6 w-6 text-green-500" /> Secure Payment
@@ -234,25 +236,15 @@ const PaymentSection = ({ handleProceedToFakePayment, booking }) => (
         </AlertDescription>
       </Alert>
       <Button
-        className="w-full"
+        className="w-full h-12 text-lg font-semibold"
         onClick={handleProceedToFakePayment}
         disabled={!booking.contactName || !booking.contactPhone}
       >
-        Proceed to Payment
+        Confirm Booking
       </Button>
     </CardContent>
   </Card>
 );
-
-const findNearbyAmbulances = async (location) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  return DUMMY_AMBULANCES.map((ambulance) => ({
-    ...ambulance,
-    distance: Math.floor(Math.random() * 5) + 1,
-    eta: `${Math.floor(Math.random() * 10) + 5} mins`,
-  }));
-};
 
 const AmbulanceBooking = () => {
   const [availableAmbulances, setAvailableAmbulances] = useState([]);

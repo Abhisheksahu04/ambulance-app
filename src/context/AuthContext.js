@@ -1,10 +1,11 @@
-// src/contexts/AuthContext.js
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { Client, Account, Databases } from "appwrite";
+import { Client, Databases } from "appwrite";
+import { useLocation } from "../hooks/useLocation";
+import { useHospitals } from "../hooks/useHospitals";
 
-const AuthContext = createContext(undefined);
+const AppContext = createContext(null);
 
 // Initialize Appwrite
 const client = new Client()
@@ -13,8 +14,12 @@ const client = new Client()
 
 const database = new Databases(client);
 
-export function AuthProvider({ children }) {
-  const { user, isLoading } = useUser();
+export const AppProvider = ({ children }) => {
+  const { user, isLoading: authLoading } = useUser();
+  const { location, error, isLoading: locationLoading } = useLocation();
+  const hospitals = useHospitals(location);
+  const ambulanceLocation = { lat: 28.6139, lng: 77.2090 }; // Dummy ambulance location
+
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,10 +27,9 @@ export function AuthProvider({ children }) {
     const fetchUserDetails = async () => {
       if (user?.sub) {
         try {
-          // Fetch user details from Appwrite
           const response = await database.listDocuments(
-            "UserDB",// Database ID
-            "users",// Collection name
+            "UserDB",
+            "users",
             [] // Query where auth0Id equals user.sub
           );
           if (response.documents.length > 0) {
@@ -37,7 +41,6 @@ export function AuthProvider({ children }) {
       }
       setLoading(false);
     };
-
     fetchUserDetails();
   }, [user]);
 
@@ -47,10 +50,7 @@ export function AuthProvider({ children }) {
         "UserDB",
         "users",
         "unique()",
-        {
-          auth0Id: user?.sub,
-          ...details,
-        }
+        { auth0Id: user?.sub, ...details }
       );
       setUserDetails(response);
     } catch (error) {
@@ -59,19 +59,37 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const nearestHospital = hospitals.hospitals.length > 0 ? hospitals.hospitals[0] : null;
+
+  if (authLoading || locationLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <AuthContext.Provider
-      value={{ user, userDetails, loading, updateUserDetails }}
+    <AppContext.Provider
+      value={{
+        user,
+        userDetails,
+        loading,
+        updateUserDetails,
+        userLocation: location,
+        ambulanceLocation,
+        hospitals,
+        nearestHospital,
+      }}
     >
       {children}
-    </AuthContext.Provider>
+    </AppContext.Provider>
   );
-}
+};
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("useAppContext must be used within an AppProvider");
   }
   return context;
 };
