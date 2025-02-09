@@ -1,12 +1,18 @@
-import localFont from "next/font/local";
-import "./globals.css";
-import { AuthProvider } from "../context/AuthProvider";
+// src/app/layout.js
+
+import { AppProvider } from "@/context/AuthContext"; // Correct path
+import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
+import "./globals.css";
+import localFont from "next/font/local";
+
+// Add your fonts
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -19,15 +25,15 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <AuthProvider>
-         
-          {children}
-        </AuthProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AppProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+          </ThemeProvider>
+        </AppProvider>
       </body>
     </html>
   );

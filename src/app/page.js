@@ -7,12 +7,12 @@ import HeroSection from "../components/HeroSection";
 export default function Home() {
   return (
     <div className="">
-      <Navbar />
+      {/* <Navbar /> */}
         <div className="min-h-screen relative">
           <Chatbot />
           <HeroSection />
         </div>
-        <Footer />
+        {/* <Footer /> */}
     </div>
   );
 }
