@@ -17,7 +17,7 @@ import Container from "./Container";
 
 const HeroSection = () => {
   return (
-      <div className="relative min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-blue-950 px-28 pt-10 via-indigo-950 to-slate-900">
+      <div className="relative min-h-screen w-screen overflow-x-hidden px-5 bg-gradient-to-br from-blue-950 md:px-28 lg:pt-10 via-indigo-950 to-slate-900">
         {/* Animated background pattern */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute w-full h-full bg-[radial-gradient(circle_500px_at_50%_200px,#3b82f6,transparent)]" />
@@ -105,7 +105,7 @@ const HeroSection = () => {
                   </div>
 
                   {/* Floating Stats Card */}
-                  <div className="absolute -top-8 -right-8 bg-gradient-to-br from-blue-500 to-cyan-500 p-[1px] rounded-2xl rotate-6 shadow-xl">
+                  <div className="absolute -top-8  -right-8 bg-gradient-to-br from-blue-500 to-cyan-500 p-[1px] rounded-2xl rotate-6 shadow-xl">
                     <div className="bg-slate-950 rounded-2xl p-4 backdrop-blur-xl">
                       <div className="flex items-center gap-4">
                         <div className="relative ">
@@ -206,7 +206,7 @@ const HeroSection = () => {
                         ].map((feature, i) => (
                           <div
                             key={i}
-                            className="group relative bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1"
+                            className="group relative bg-transparent backdrop:blur-sm rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1"
                           >
                             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                             <div

@@ -107,7 +107,7 @@ const Navbar = () => {
               </Button>
             </Link>
           ) : (
-            <Link href="/api/auth/login">
+            <Link href="/api/auth/login?returnTo=/register-new">
               <Button className="bg-blue-600 hover:bg-blue-700 shadow-md transition-all">
                 Login
               </Button>

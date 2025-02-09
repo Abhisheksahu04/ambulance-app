@@ -21,6 +21,7 @@ const RegistrationForm = () => {
         userType,
         ...formData,
       });
+      console.log("User details saved successfully");
       router.push("/dashboard");
     } catch (error) {
       console.error("Error saving user details:", error);
