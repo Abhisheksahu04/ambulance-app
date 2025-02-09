@@ -1,11 +1,10 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import { AuthProvider } from "../context/AuthProvider";
+import { AppProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
-import "./globals.css";
-import localFont from "next/font/local";
+
 
 // Add your fonts
 const geistSans = localFont({
@@ -34,9 +33,7 @@ export default function RootLayout({ children }) {
       >
         <UserProvider>
           <AppProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               {children}
-            </ThemeProvider>
           </AppProvider>
         </UserProvider>
         
