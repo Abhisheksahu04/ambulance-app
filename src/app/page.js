@@ -7,12 +7,11 @@ import HeroSection from "../components/HeroSection";
 export default function Home() {
   return (
     <div className="">
-      {/* <Navbar /> */}
-        <div className="min-h-screen relative">
-          <Chatbot />
-          <HeroSection />
-        </div>
-        {/* <Footer /> */}
+      <Navbar />
+      <div className="min-h-screen relative overflow-x-hidden">
+        <Chatbot />
+        <HeroSection />
+      </div>
     </div>
   );
 }

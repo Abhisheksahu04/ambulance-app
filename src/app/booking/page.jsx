@@ -1,47 +1,88 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { MapPin, Ambulance, CreditCard, Phone, Star, Clock, Navigation, Shield } from "lucide-react";
+import { MapPin, Ambulance, CreditCard, Phone, Star, Clock, Navigation, Shield, Star, Clock, Navigation, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import dynamic from "next/dynamic";
+import RealTimeTracking from "@/components/RealTimetracking";
 
-const FakePaymentForm = dynamic(() => import("@/components/FakePaymentForm"), { ssr: false });
+const DUMMY_AMBULANCES = [
+  {
+    id: 1,
+    type: "Basic Life Support",
+    driverName: "Rajesh Kumar",
+    rating: 4.8,
+    vehicleNumber: "MH 01 AB 1234",
+    distance: "2.5",
+    eta: "10 mins",
+  },
+  {
+    id: 2,
+    type: "Advanced Life Support",
+    driverName: "Priya Singh",
+    rating: 4.9,
+    vehicleNumber: "MH 01 CD 5678",
+    distance: "3.2",
+    eta: "15 mins",
+  },
+  {
+    id: 3,
+    type: "Patient Transport",
+    driverName: "Amit Patel",
+    rating: 4.7,
+    vehicleNumber: "MH 01 EF 9012",
+    distance: "1.8",
+    eta: "8 mins",
+  },
+  {
+    id: 4,
+    type: "Critical Care",
+    driverName: "Suresh Reddy",
+    rating: 5.0,
+    vehicleNumber: "MH 01 GH 3456",
+    distance: "4.0",
+    eta: "18 mins",
+  },
+];
+// Dynamically import client-side components
+const FakePaymentForm = dynamic(() => import("@/components/FakePaymentForm"), {
+  ssr: false,
+});
 
-const EmergencyHeader = () => (
-  <div className="bg-red-600 text-white py-4 px-6 rounded-lg mb-6 shadow-lg">
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Emergency Ambulance Services</h1>
-        <p className="text-red-100">24/7 Emergency Medical Response</p>
-      </div>
-      <Shield className="h-12 w-12" />
-    </div>
-  </div>
-);
+// const RealTimeTracking = dynamic(
+//   () => import("@/components/RealTimetracking"),
+//   {
+//     ssr: false,
+//   }
+// );
 
-const ServiceFeatures = () => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    {[
-      { icon: Clock, title: "Quick Response", desc: "Average arrival time: 10-15 minutes" },
-      { icon: Shield, title: "Certified Staff", desc: "Fully trained medical professionals" },
-      { icon: Navigation, title: "GPS Tracking", desc: "Real-time ambulance tracking" }
-    ].map(({ icon: Icon, title, desc }) => (
-      <Card key={title} className="border-l-4 border-l-blue-500">
-        <CardContent className="pt-6">
-          <div className="flex items-start space-x-4">
-            <Icon className="h-8 w-8 text-blue-500" />
-            <div>
-              <h3 className="font-semibold text-lg">{title}</h3>
-              <p className="text-gray-600 text-sm">{desc}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    ))}
-  </div>
+// Moved AmbulanceList component definition here
+const AmbulanceList = ({
+  ambulances,
+  selectedAmbulance,
+  setSelectedAmbulance,
+}) => (
+  <Card>
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <Ambulance className="h-5 w-5" /> Available Ambulances
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+      {ambulances.map((ambulance) => (
+        <AmbulanceCard
+          key={ambulance.id}
+          ambulance={ambulance}
+          isSelected={selectedAmbulance?.id === ambulance.id}
+          onSelect={setSelectedAmbulance}
+        />
+      ))}
+    </CardContent>
+  </Card>
 );
 
 const LocationInput = ({ onLocationSelect }) => {
@@ -238,9 +279,10 @@ const AmbulanceBooking = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6 bg-gray-50 min-h-screen">
-      <EmergencyHeader />
-      <ServiceFeatures />
+    <div className="max-w-4xl min-h-screen mx-auto p-4 space-y-6">
+      <div className="text-center">
+      <h1 className="text-3xl font-bold">Emergency Ambulance Booking</h1>
+      </div>
       
       <LocationInput onLocationSelect={handleLocationSelect} />
 

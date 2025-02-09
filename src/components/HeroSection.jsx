@@ -1,295 +1,235 @@
-"use client"
-
-import Link from "next/link"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Clock, MapPin, CreditCard, Hospital, Globe, Phone, User, Menu } from "lucide-react"
+  MapPin,
+  CreditCard,
+  Hospital,
+  Ambulance,
+  Clock,
+  Phone,
+  ArrowRight,
+  Activity,
+  Navigation2,
+} from "lucide-react";
+import Link from "next/link";
+import Container from "./Container";
 
-// Navigation Component
-const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  // Desktop Navigation
-  const DesktopNav = () => (
-    <NavigationMenu className="hidden md:flex">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Services</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-6 w-[400px]">
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="ghost" className="justify-start">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  Book Ambulance
-                </Button>
-                <Button variant="ghost" className="justify-start">
-                  <Hospital className="mr-2 h-4 w-4" />
-                  Find Hospitals
-                </Button>
-              </div>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-6 w-[400px]">
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="ghost" className="justify-start">Help Center</Button>
-                <Button variant="ghost" className="justify-start">Contact</Button>
-              </div>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  )
-
-  // Mobile Navigation
-  const MobileNav = () => (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild className="md:hidden">
-        <Button variant="ghost" size="icon">
-          <Menu className="h-6 w-6" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-64">
-        <div className="flex flex-col gap-4 pt-10">
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold mb-2">Services</h3>
-            <Button variant="ghost" className="justify-start w-full">
-              <MapPin className="mr-2 h-4 w-4" />
-              Book Ambulance
-            </Button>
-            <Button variant="ghost" className="justify-start w-full">
-              <Hospital className="mr-2 h-4 w-4" />
-              Find Hospitals
-            </Button>
-          </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold mb-2">Resources</h3>
-            <Button variant="ghost" className="justify-start w-full">Help Center</Button>
-            <Button variant="ghost" className="justify-start w-full">Contact</Button>
-          </div>
-          <div className="flex flex-col gap-2 mt-4">
-            <Button variant="outline" className="w-full">Login</Button>
-            <Button className="w-full">Register</Button>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-
+const HeroSection = () => {
   return (
-    <>
-      <DesktopNav />
-      <MobileNav />
-    </>
-  )
-}
-
-// Features Component
-const FeatureCard = ({ icon, title, description }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="bg-secondary p-2 w-fit rounded-lg mb-4">
-          {icon}
+      <div className="relative min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-blue-950 px-28 pt-10 via-indigo-950 to-slate-900">
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute w-full h-full bg-[radial-gradient(circle_500px_at_50%_200px,#3b82f6,transparent)]" />
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJub25lIiBzdHJva2U9IiMxZTI5M2IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWRhc2hhcnJheT0iMTAgMTAiLz48L3N2Zz4=')] opacity-10" />
         </div>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-    </Card>
-  )
-}
 
-// Testimonial Component
-const TestimonialCard = ({ name, location, text }) => {
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-center gap-4 mb-4">
-          <Avatar>
-            <AvatarFallback>
-              <User className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-semibold">{name}</p>
-            <p className="text-sm text-muted-foreground">{location}</p>
-          </div>
-        </div>
-        <p className="text-muted-foreground">{text}</p>
-      </CardContent>
-    </Card>
-  )
-}
-
-const features = [
-  {
-    icon: <Clock className="h-6 w-6" />,
-    title: "Quick Response",
-    description: "Average response time under 10 minutes in urban areas"
-  },
-  {
-    icon: <Hospital className="h-6 w-6" />,
-    title: "Hospital Network",
-    description: "Connected with leading hospitals across the country"
-  },
-  {
-    icon: <Globe className="h-6 w-6" />,
-    title: "Wide Coverage",
-    description: "Available in over 100 cities across India"
-  }
-]
-
-const testimonials = [
-  {
-    name: "Ramesh Kumar",
-    location: "New Delhi",
-    text: "The quick response time and professional service saved my father's life during an emergency. Extremely grateful!"
-  },
-  {
-    name: "Priya Sharma",
-    location: "Mumbai",
-    text: "Excellent service! The app made it so easy to track the ambulance in real-time. Highly recommended."
-  },
-  {
-    name: "Ahmed Khan",
-    location: "Bangalore",
-    text: "Professional staff and well-equipped ambulances. They arrived within minutes when we needed them most."
-  }
-]
-
-export default function HomePage() {
-  return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <span className="text-xl font-bold">SmartAid</span>
-            <Navigation />
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline">Login</Button>
-            <Button>Register</Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="container px-4 py-12 md:py-24">
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto gap-6">
-          <Badge variant="secondary" className="text-sm">Emergency Services</Badge>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter lg:text-5xl">
-            Quick Emergency Response When Every Second Counts
-          </h1>
-          <p className="text-muted-foreground text-base md:text-lg max-w-[700px]">
-            Book and track ambulances in real-time. Connected with the best hospitals and emergency responders across India.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              <MapPin className="h-4 w-4" />
-              Book Now
-            </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">Learn More</Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container px-4 py-12 md:py-24 border-t">
-        <div className="text-center max-w-[900px] mx-auto mb-12 md:mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tighter lg:text-4xl mb-4">
-            Why Choose SmartAid
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg">
-            Advanced technology meeting emergency healthcare needs with precision and care.
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="container px-4 py-12 md:py-24 border-t">
-        <div className="text-center max-w-[900px] mx-auto mb-12 md:mb-16">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tighter lg:text-4xl mb-4">
-            What People Say
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg">
-            Real experiences from people we've helped
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <TestimonialCard key={index} {...testimonial} />
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t">
-        <div className="container px-4 py-8 md:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-semibold mb-4">Quick Links</h3>
-              <div className="flex flex-col gap-2 text-muted-foreground">
-                <Button variant="link" className="h-auto p-0">Book Ambulance</Button>
-                <Button variant="link" className="h-auto p-0">Find Hospitals</Button>
-                <Button variant="link" className="h-auto p-0">Register as Driver</Button>
-                <Button variant="link" className="h-auto p-0">Emergency Contact</Button>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <div className="flex flex-col gap-2 text-muted-foreground">
-                <Button variant="link" className="h-auto p-0">About Us</Button>
-                <Button variant="link" className="h-auto p-0">Careers</Button>
-                <Button variant="link" className="h-auto p-0">Blog</Button>
-                <Button variant="link" className="h-auto p-0">Press</Button>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <div className="flex flex-col gap-2 text-muted-foreground">
-                <Button variant="link" className="h-auto p-0">Help Center</Button>
-                <Button variant="link" className="h-auto p-0">Safety Center</Button>
-                <Button variant="link" className="h-auto p-0">Legal</Button>
-                <Button variant="link" className="h-auto p-0">Privacy Policy</Button>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <div className="flex flex-col gap-2 text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  <span>1800-123-4567</span>
+        {/* Main content */}
+        <div className="relative container mx-auto px-4">
+          <div className="flex min-h-screen items-center">
+            <div className="grid lg:grid-cols-2 gap-16 w-full py-20">
+              {/* Left column - Content */}
+              <div className="space-y-8">
+                {/* Emergency badge */}
+                <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-4 py-2 text-red-400">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-sm font-medium">
+                    24/7 Emergency Response
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Mumbai, India</span>
+
+                {/* Main heading */}
+                <div className="space-y-4">
+                  <h1 className="text-5xl md:text-7xl font-bold text-white">
+                    Smart
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                      Emergency Care
+                    </span>
+                    At Your Fingertips
+                  </h1>
+                  <p className="text-xl text-slate-400 max-w-xl">
+                    Experience lightning-fast ambulance booking with real-time
+                    tracking and AI-powered emergency response system.
+                  </p>
+                </div>
+
+                {/* CTA buttons */}
+                <div className="flex flex-wrap gap-4">
+                  <Link href="/booking">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg h-14 px-8"
+                    >
+                      <Phone className="mr-2 h-5 w-5" />
+                      Book Emergency Now
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link href="/hospitals">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-black text-lg border border-white h-14 px-8"
+                    >
+                      <Hospital className="mr-2 h-5 w-5" />
+                      Find Hospitals
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-8 pt-8 border-t border-slate-800">
+                  <div>
+                    <div className="text-3xl font-bold text-white">5min</div>
+                    <div className="text-slate-400">Average Response</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-white">1000+</div>
+                    <div className="text-slate-400">Daily Rescues</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-white">24/7</div>
+                    <div className="text-slate-400">Active Support</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right column - Visual */}
+              <div className="relative">
+                {/* Main container with gorgeous glass effect */}
+                <div className="relative bg-gradient-to-br from-blue-900/20 via-indigo-900/20 to-slate-900/20 rounded-3xl border border-white/10 backdrop-blur-xl p-8 h-full shadow-2xl">
+                  {/* Decorative elements */}
+                  <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                    <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-500/10 blur-3xl" />
+                    <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-cyan-500/10 blur-3xl" />
+                  </div>
+
+                  {/* Floating Stats Card */}
+                  <div className="absolute -top-8 -right-8 bg-gradient-to-br from-blue-500 to-cyan-500 p-[1px] rounded-2xl rotate-6 shadow-xl">
+                    <div className="bg-slate-950 rounded-2xl p-4 backdrop-blur-xl">
+                      <div className="flex items-center gap-4">
+                        <div className="relative ">
+                          <div className="absolute -inset-1 bg-blue-500/20 rounded-full animate-ping" />
+                          <Ambulance className="h-12 w-12 text-blue-400" />
+                        </div>
+                        <div>
+                          <div className="text-white font-bold text-lg">
+                            Ambulance #A127
+                          </div>
+                          <div className="text-cyan-400 font-medium">
+                            <span className="inline-flex items-center gap-1">
+                              <Activity className="h-4 w-4" />3 mins away
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Main Map Area with Enhanced Visuals */}
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-900/80 border border-white/10">
+                    {/* Map Background */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1e293b,#0f172a)]">
+                      {/* Grid Pattern */}
+                      <div
+                        className="absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage:
+                            "radial-gradient(circle at center, #334155 1px, transparent 1px)",
+                          backgroundSize: "40px 40px",
+                        }}
+                      />
+
+                      {/* Animated Route */}
+                      <div className="absolute inset-0">
+                        <svg className="w-full h-full">
+                          <path
+                            d="M100,500 Q300,400 500,100"
+                            stroke="url(#blueGradient)"
+                            strokeWidth="3"
+                            fill="none"
+                            strokeDasharray="6 6"
+                            className="animate-[dash_3s_linear_infinite]"
+                          />
+                          <defs>
+                            <linearGradient
+                              id="blueGradient"
+                              x1="0%"
+                              y1="0%"
+                              x2="100%"
+                              y2="0%"
+                            >
+                              <stop offset="0%" stopColor="#3b82f6" />
+                              <stop offset="100%" stopColor="#06b6d4" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+
+                      {/* Location Markers */}
+                      <div className="absolute top-1/4 right-1/4">
+                        <div className="relative">
+                          <div className="absolute -inset-4 bg-blue-500/20 rounded-full animate-ping" />
+                          <Hospital className="w-8 h-8 text-blue-400" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Feature Cards with Enhanced Design */}
+                    <div className="absolute inset-0 p-6">
+                      <div className="grid grid-cols-2 gap-6 h-full">
+                        {[
+                          {
+                            icon: <Clock className="h-8 w-8" />,
+                            title: "Quick Booking",
+                            desc: "Book in seconds",
+                            gradient: "from-blue-400 to-blue-600",
+                          },
+                          {
+                            icon: <MapPin className="h-8 w-8" />,
+                            title: "Live Tracking",
+                            desc: "Real-time updates",
+                            gradient: "from-cyan-400 to-cyan-600",
+                          },
+                          {
+                            icon: <CreditCard className="h-8 w-8" />,
+                            title: "Secure Payment",
+                            desc: "Multiple options",
+                            gradient: "from-indigo-400 to-indigo-600",
+                          },
+                          {
+                            icon: <Navigation2 className="h-8 w-8" />,
+                            title: "Smart Routing",
+                            desc: "AI-powered path",
+                            gradient: "from-sky-400 to-sky-600",
+                          },
+                        ].map((feature, i) => (
+                          <div
+                            key={i}
+                            className="group relative bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1"
+                          >
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                            <div
+                              className={`inline-flex p-2 rounded-xl bg-gradient-to-br ${feature.gradient} bg-opacity-10 text-white mb-3`}
+                            >
+                              {feature.icon}
+                            </div>
+                            <div className="font-semibold text-white text-lg mb-1">
+                              {feature.title}
+                            </div>
+                            <div className="text-slate-400">{feature.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </footer>
-    </div>
-  )
-}
+      </div>
+  );
+};
+
+export default HeroSection;

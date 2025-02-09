@@ -1,6 +1,7 @@
-// src/app/layout.js
-
-import { AppProvider } from "@/context/AuthContext"; // Correct path
+import localFont from "next/font/local";
+import "./globals.css";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { AuthProvider } from "../context/AuthProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
@@ -28,12 +29,17 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AppProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-          </ThemeProvider>
-        </AppProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <UserProvider>
+          <AppProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              {children}
+            </ThemeProvider>
+          </AppProvider>
+        </UserProvider>
+        
       </body>
     </html>
   );
