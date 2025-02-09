@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Menu, Mountain, Bell, User } from "lucide-react";
-
+import NotificationSystem from "./NotificationSystem";
 const Navbar = () => {
   const { user, isLoading } = useUser();
   const [scrolled, setScrolled] = React.useState(false);
@@ -72,13 +72,7 @@ const Navbar = () => {
         {/* Right Section */}
         <div className="ml-auto flex items-center gap-4">
           {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hidden sm:flex hover:bg-blue-800"
-          >
-            <Bell className="h-5 w-5 text-white" />
-          </Button>
+          <NotificationSystem />
 
           {/* User Section */}
           {user && (
