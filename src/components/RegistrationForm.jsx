@@ -7,29 +7,56 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Toaster, toast } from "react-hot-toast";
 
 const RegistrationForm = () => {
   const [userType, setUserType] = useState("");
   const [formData, setFormData] = useState({});
+  const [address, setAddress] = useState(""); // Store the fetched address
   const { updateUserDetails } = useAuth();
   const router = useRouter();
+
+  const fetchAddressByPincode = async (pincode) => {
+    if (pincode.length !== 6) return; // Ensure valid pincode length
+
+    try {
+      const response = await fetch(
+        `https://api.postalpincode.in/pincode/${pincode}`
+      );
+      const data = await response.json();
+
+      if (data[0].Status === "Success") {
+        const location = data[0].PostOffice[0];
+        const fullAddress = `${location.Name}, ${location.District}, ${location.State}`;
+        setAddress(fullAddress);
+        setFormData({ ...formData, address: fullAddress });
+        toast.success("Pincode verified!");
+      } else {
+        setAddress("");
+        toast.error("Invalid Pincode! Please check again.");
+      }
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      toast.error("Failed to verify pincode.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateUserDetails({
-        userType,
-        ...formData,
-      });
-      console.log("User details saved successfully");
+      await updateUserDetails({ userType, ...formData });
+      toast.success("User details saved successfully!");
       router.push("/dashboard");
     } catch (error) {
       console.error("Error saving user details:", error);
+      toast.error("Failed to save user details. Please try again.");
+      // router.push("/");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-center" reverseOrder={false} />
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
@@ -69,29 +96,32 @@ const RegistrationForm = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="pincode">Pincode</Label>
                   <Input
-                    id="address"
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
+                    id="pincode"
+                    type="number"
+                    onChange={(e) => {
+                      const pincode = e.target.value;
+                      setFormData({ ...formData, pincode });
+                      fetchAddressByPincode(pincode); // Fetch address when user enters pincode
+                    }}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="pincode">Pincode</Label>
+                  <Label htmlFor="address">Address</Label>
                   <Input
-                    id="pincode"
-                    onChange={(e) =>
-                      setFormData({ ...formData, pincode: e.target.value })
-                    }
-                    required
+                    id="address"
+                    value={address}
+                    readOnly
+                    placeholder="Address will be filled automatically"
                   />
                 </div>
                 <div>
                   <Label htmlFor="emergency">Emergency Contact</Label>
                   <Input
                     id="emergency"
+                    type="tel"
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -133,35 +163,43 @@ const RegistrationForm = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="serviceArea">Service Area</Label>
+                  <Label htmlFor="driverPincode">Pincode</Label>
                   <Input
-                    id="serviceArea"
-                    onChange={(e) =>
-                      setFormData({ ...formData, serviceArea: e.target.value })
-                    }
+                    id="driverPincode"
+                    type="number"
+                    onChange={(e) => {
+                      const pincode = e.target.value;
+                      setFormData({ ...formData, pincode });
+                      fetchAddressByPincode(pincode); // Fetch address
+                    }}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="driverPincode">Pincode</Label>
+                  <Label htmlFor="address">Address</Label>
                   <Input
-                    id="driverPincode"
-                    onChange={(e) =>
-                      setFormData({ ...formData, pincode: e.target.value })
-                    }
-                    required
+                    id="address"
+                    value={address}
+                    readOnly
+                    placeholder="Auto-filled Address"
                   />
                 </div>
                 <div>
                   <Label htmlFor="availability">Availability Time Slots</Label>
-                  <Input
+                  <select
                     id="availability"
+                    className="w-full px-3 py-2 border rounded-md"
                     onChange={(e) =>
                       setFormData({ ...formData, availability: e.target.value })
                     }
-                    placeholder="e.g., 9 AM - 5 PM"
                     required
-                  />
+                  >
+                    <option value="">Select Time Slot</option>
+                    <option value="9AM-12PM">9 AM - 12 PM</option>
+                    <option value="12PM-3PM">12 PM - 3 PM</option>
+                    <option value="3PM-6PM">3 PM - 6 PM</option>
+                    <option value="6PM-9PM">6 PM - 9 PM</option>
+                  </select>
                 </div>
               </div>
             )}
